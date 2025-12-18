@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<!--
+  Template: GLASS v1.0
+  Author: Haruki Tominaga
+  License: https://amix-design.com/tominaga/eyan-theme/license 
+  © 2025 EYAN / トミナガハルキ
+-->
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+
+    <title>Portfolio - GLASS</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&family=M+PLUS+Rounded+1c:wght@300;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 【デザイン設定エリア】
+           ダークモードの配色に大幅に変更
+        */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #1f2730 0%, #2c343c 100%); /* 全体の背景色 (ダーク) */
+            --glass-bg: rgba(60, 70, 80, 0.4);   /* ガラスの背景色（暗い透明度） */
+            --glass-border: rgba(255, 255, 255, 0.2); /* ガラスの枠線 (明るく薄く) */
+            --text-main: #f0f0f0;                        /* 文字色 (明るく) */
+            --accent: #6aa8d6;                        /* アクセントカラー (落ち着いた青) */
+            --text-heading: #ffffff;                  /* 見出し色 */
+        }
+
+        body {
+            font-family: 'Quicksand', 'M PLUS Rounded 1c', sans-serif;
+            margin: 0;
+            padding: 0;
+            /* bodyの背景は gradient ではなく単色+装飾（blob）で構成 */
+            background: #232c34;
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ふわっと表示されるアニメーション */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 背景の動くボール (装飾) - 色をダークに馴染むように調整 */
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px); /* ぼかしを強く */
+            z-index: -1;
+            opacity: 0.6; /* 透明度を調整 */
+            animation: float 10s infinite alternate;
+        }
+        /* ボールの色とサイズ設定 - ダークに映える色 */
+        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: rgba(106, 168, 214, 0.5); /* アクセントカラーの薄い版 */ }
+        .blob-2 { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: rgba(255, 165, 0, 0.3); /* 暖色系で対比 */ animation-delay: -5s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(30px, 50px); }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        /* ガラスカードのデザイン定義 */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); /* 影を強調 */
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* プロフィールセクション */
+        .profile-card {
+            text-align: center;
+            padding: 4rem 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out forwards;
+        }
+
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: 60% 35%; 
+            border: 4px solid rgba(255,255,255,0.3); /* 明るい枠線 */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            margin-bottom: 1.5rem;
+            background-color: #3e4a55; /* 暗い背景色 */
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin: 0.5rem 0;
+            color: var(--text-heading);
+        }
+
+        .role {
+            font-weight: 500;
+            color: #b0c4de; /* やや明るい灰色 */
+            margin-bottom: 2rem;
+            letter-spacing: 0.05em;
+        }
+
+        .links-row {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        /* リンクボタンのデザイン */
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.1); /* 暗い背景に馴染むように調整 */
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 700;
+            transition: 0.3s;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .glass-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        /* --- 追加: テキストコンテンツエリア用スタイル --- */
+        .text-content-card {
+            text-align: left;
+            line-height: 1.8;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.2s forwards; /* 少し遅れて表示 */
+        }
+        .text-content-card h2 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            color: var(--accent); /* アクセントカラーで見出しを強調 */
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Biography内のリスト (Favorite Drummers) スタイルをまとめて定義 */
+        .text-content-card ul.text-list {
+            list-style: none; 
+            padding: 0; 
+            margin: 0;
+            /* リストを横並びにするスタイルを分離（Biography内のulは縦長を想定） */
+        }
+
+        /* Drummers専用の横並びスタイル */
+        .text-content-card ul.drummers-list {
+            list-style: none; 
+            padding: 0; 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 0.5rem 1rem; 
+            font-weight: 500;
+            color: var(--text-main);
+        }
+        /* ------------------------------------------- */
+
+        /* ギャラリーグリッド設定 */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .gallery-item {
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            aspect-ratio: 1;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+            background-color: rgba(0,0,0,0.2); /* 暗い背景色 */
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .item-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.4); /* 暗いオーバーレイ */
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #fff; /* 明るい文字色 */
+        }
+        
+        .gallery-item:hover .item-overlay {
+            opacity: 1;
+        }
+
+        /* 拡大表示（モーダル） */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7); /* 暗い背景 */
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            width: 90%;
+            max-width: 600px;
+            background: #3e4a55; /* モーダル背景も暗く */
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            transform: translateX(0) scale(1);
+            transition: transform 0.36s cubic-bezier(0.22, 0.9, 0.3, 1);
+            color: var(--text-main);
+        }
+        .modal-overlay.active .modal-content {
+            transform: translateX(0) scale(1);
+        }
+
+        /* --- モーダルコンテンツの切り替えと動画埋め込み用の追加スタイル --- */
+        .modal-content-item {
+            width: 100%;
+            height: auto;
+            max-height: 70vh;
+            object-fit: contain;
+            background-color: #232c34; /* 動画・画像ビューアの背景も暗く */
+            display: none; /* JSで切り替え */
+        }
+
+        /* 画像専用のスタイル */
+        #modal-img {
+            cursor: pointer;
+        }
+        
+        /* 動画埋め込み用のアスペクト比維持コンテナ */
+        #modal-video-container {
+            position: relative;
+            padding-top: 56.25%; /* 16:9 のアスペクト比 */
+            max-height: 70vh;
+        }
+        #modal-video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        /* ------------------------------------------------------------- */
+        
+        .modal-body {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .modal-body h2 {
+             color: var(--text-heading);
+        }
+        .modal-body p {
+            color: #b0c4de;
+        }
+
+        /* サブモーダル（モーダル内から開く詳細表示用） */
+        /* 右側に固定表示するサブモーダルレイアウト (メインモーダルを左へスライドさせる) */
+        .submodal-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none; /* 背景のクリックはメインモーダルに伝える */
+            z-index: 110;
+            display: block;
+        }
+        .submodal-panel {
+            position: absolute;
+            top: 50%;
+            right: 4%;
+            transform: translateY(-50%) translateX(30px); /* 非表示時は少し右にオフセット */
+            width: 40%;
+            max-width: 520px;
+            min-width: 300px;
+            max-height: 80vh;
+            overflow: auto;
+            background: #2f3a42;
+            border-radius: 16px;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+            color: var(--text-main);
+            pointer-events: auto;
+            opacity: 0;
+            transition: transform 0.28s ease, opacity 0.28s ease;
+        }
+        .submodal-panel.active {
+            transform: translateY(-50%) translateX(0);
+            opacity: 1;
+        }
+        .submodal-close-btn {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text-main);
+            padding: 0.5rem 0.8rem;
+            border-radius: 10px;
+            cursor: pointer;
+            float: right;
+        }
+
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .blob { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="container">
+        <div class="glass-card profile-card">
+            <!-- プロフィール画像の設定（URLを変更してください） -->
+            <img src="image/profile.jpg" 
+                 alt="Profile" class="profile-img"
+                 onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22200%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20200%20200%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_1%20text%20%7B%20fill%3Argba(255%2C255%2C255%2C.75)%3Bfont-weight%3Anormal%3Bfont-family%3AHelvetica%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_1%22%3E%3Crect%20width%3D%22200%22%20height%3D%22200%22%20fill%3D%22%23cccccc%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%2274%22%20y%3D%22104%22%3EProfile%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E'">
+            
+            <h1 id="user-name"></h1>
+            <p id="user-role" class="role"></p>
+            <p id="user-bio" style="margin-bottom: 2rem; line-height: 1.8;"></p>
+            
+            <div id="links-container" class="links-row">
+            </div>
+        </div>
+
+        <!-- 複数のコンテンツブロックを格納するためのコンテナ -->
+        <div id="content-blocks-container">
+            <!-- JSによって contentBlocks の内容がここに追加されます -->
+        </div>
+
+        <div id="gallery-grid" class="gallery-grid">
+        </div>
+    </div>
+
+    <div id="modal" class="modal-overlay" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            
+            <!-- モーダルコンテンツの表示領域を分離 -->
+            <div id="modal-content-container">
+                <!-- 画像表示用（画像の場合はここにsrcがセットされ表示される） -->
+                <img id="modal-img" src="" class="modal-content-item" onclick="closeModal()">
+                
+                <!-- 動画埋め込み用（動画の場合はここにiframeが挿入され表示される） -->
+                <div id="modal-video-container" class="modal-content-item">
+                    <!-- iframe is inserted here by JavaScript -->
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <h2 id="modal-title" style="margin: 0 0 0.5rem 0;"></h2>
+                <!-- allow line breaks in category (supports \n and <br>) -->
+                <p id="modal-cat" style="color: #888; margin: 0; white-space: pre-line;"></p>
+                <div style="margin-top:1rem;">
+                    <button id="modal-detail-btn" class="glass-btn" style="padding:0.5rem 0.9rem; font-weight:600;">詳細を見る</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- サブモーダル: メインモーダルから開く詳細表示 -->
+    <div id="submodal" class="submodal-overlay">
+        <div id="submodal-panel" class="submodal-panel" aria-hidden="true">
+            <div id="submodal-body" style="white-space: pre-wrap; margin-top:0; line-height:1.6;"></div>
+            <!-- submodal close moved to main modal detail button -->
+        </div>
+    </div>
+
+    <script>
+        /**
+         * ==============================================
+         * 設定エリア (Updated)
+         * ==============================================
+         */
+        const config = {
+            // あなたのお名前
+            name: "Jr.",
+            
+            // 肩書き
+            role: "Drummer",
+            
+            // 簡単な自己紹介（プロフィールカード内）
+            bio: "ドラムやゲームが大好きなただの会社員です",
+            
+            // ★複数の詳細コンテンツブロックの配列に変更★
+            contentBlocks: [
+                {
+                    title: "Biography",
+                    body: `
+                        1988年生まれ。<br>
+                        中学校の吹奏楽部でパーカッションパートに所属し、初めてドラムセットと出会う。<br>
+                        ドラムにのめりこみ、中学卒業後は軽音部や学校外でのバンド活動を行う。<br><br>
+                        
+                        その後、モーラー奏法に興味を持ち、2007年から山背弘先生に師事。<br>
+                        身体操作やグルーブ理論など、幅広く学習し、先生から「研究員資格」を授与された。<br>
+                        現在も半年に一度、新しい理論の習得や既存メソッドの確認・更新、意見交換などを行い、自身の能力向上に努めている。
+                    `
+                },
+                {
+                    title: "Favorite Drummers",
+                    // ulタグに新しいクラス 'drummers-list' を適用
+                    body: `
+                        <ul class="drummers-list">
+                            <li>Dave Weckl</li>
+                            <li>Jojo Mayer</li>
+                            <li>Benny Greb</li>
+                            <li>Buddy Rich</li>
+                            <li>Vinnie Colaiuta</li>
+                            <li>横山和明</li>
+                        </ul>
+                    `
+                }
+            ],
+
+            // SNSなどのリンク設定（元のテンプレートのままですが、必要に応じて変更してください）
+            links: [
+                { label: "Instagram", url: "https://www.instagram.com/drummeryoshiki/" },
+                { label: "X (Twitter)", url: "https://x.com/drummer_yoshiki" },
+                { label: "YouTube", url: "https://www.youtube.com/@jr.drummer" },
+                { label: "Contact (Gmail)", url: "https://mail.google.com/mail/?view=cm&fs=1&to=vi.brate.yoshiki%40gmail.com" }
+            ],
+
+            // ギャラリーの画像設定
+            // type: "image" (デフォルト) または type: "video" を指定
+            // type: "video" の場合、youtubeIdOrUrl: "動画IDまたはURL" を指定
+            // サムネイルはYouTubeから自動取得されます。
+            metaData: [
+                {
+                    title: "Main Drums",
+                    category: "レッスンに使用するドラムセット",
+                    details: '\
+<b>Snare Drum:</b><br>\
+  YAMAHA 30th Anniversary Ltd. Edition Dave Weckl / Brass 14"x5.5"<br>\
+<b>Bass Drum:</b><br>\
+  SONOR ProLite 20"x16"<br>\
+<b>Hi Tom:</b><br>\
+  SONOR Select Force Jungle 10"x8"<br>\
+<b>Lo Tom:</b><br>\
+  SONOR ProLite 12"x8"<br>\
+<b>Floor Tom:</b><br>\
+  SONOR ProLite 16"x16"<br>\
+<b>Drum Pedal:</b><br>\
+  SONOR Perfect Balance Single Pedal<br>\
+<b>Left Side Sub Crash:</b><br>\
+  SABIAN HHX Evolution O-ZONE Crash 18"<br>\
+<b>Closed Hi-hat:</b><br>\
+  MEINL Crasher Hats 8"<br>\
+<b>Main Hi-hat:</b><br>\
+  Bosphorus Black Pearl Hi-hat 15"<br>\
+<b>Main Crash:</b><br>\
+  emjmod Crash "22F6" 18"<br>\
+<b>Splash Stack:</b><br>\
+  SABIAN HHX Evolution Splash 12"/7"<br>\
+<b>Ride:</b><br>\
+  MEINL Byzance Transition Ride 21"<br>\
+<b>Right Side Sub Crash:</b><br>\
+  SABIAN HHX OMNI 19"<br>\
+<b>China:</b><br>\
+  MEINL Byzance Extra Dry China 16"\
+                    '
+                },
+                { title: "Drums at home", category: "自宅練習や電子録音用のドラムセット" },
+                { title: "Take-out Drums", category: "リュック一つで持ち運べる軽量ドラムセット" },
+                { 
+                    title: "サイハテアイニ", 
+                    category: "RADWIMPS", 
+                    type: "video", 
+                    youtubeIdOrUrl: "UGhLySGHe8I" 
+                },
+                { 
+                    title: "ドラマガコンテスト課題曲「MILESTONE」", 
+                    category: "誌上ドラム・コンテスト", 
+                    type: "video", 
+                    youtubeIdOrUrl: "wJokVK9f42Y" 
+                },
+                { 
+                    title: "然らば", 
+                    category: "マカロニえんぴつ", 
+                    type: "video", 
+                    youtubeIdOrUrl: "QD-sJbFk438" 
+                }
+            ]
+        };
+
+        // 読み込む画像の最大数
+        const MAX_IMAGES = 18; 
+
+        /**
+         * ==============================================
+         * ここから下はプログラム処理です
+         * ==============================================
+         */
+
+        /**
+         * YouTubeのURLまたはIDから動画IDを抽出する関数
+         * @param {string} input - YouTubeのURLまたは動画ID
+         * @returns {string|null} - 抽出された動画ID、またはnull
+         */
+        function extractYouTubeId(input) {
+            if (!input) return null;
+            
+            // 動画IDの正規表現パターン (11文字の英数字)
+            const idPattern = /^[a-zA-Z0-9_-]{11}$/;
+            if (idPattern.test(input)) {
+                return input; // 既にIDであればそのまま返す
+            }
+
+            // URLからIDを抽出する正規表現
+            const urlPatterns = [
+                // watch?v= または watch?.*&v=, embed, v, shorts のいずれか
+                /(?:youtube\.com\/(?:watch\?v=|watch\?.*&v=|embed\/|v\/|shorts\/)|youtu\.be\/)([^&"'>?]+)/
+            ];
+
+            for (const pattern of urlPatterns) {
+                const match = input.match(pattern);
+                if (match && match[1].length === 11) {
+                    return match[1];
+                }
+            }
+
+            return null; // IDを抽出できなかった場合
+        }
+        
+        /**
+         * YouTubeの動画IDからサムネイル画像のURLを生成する関数
+         * @param {string} videoId - YouTubeの動画ID
+         * @returns {string} - サムネイル画像のURL (最大サイズ版)
+         */
+        function getYouTubeThumbnailUrl(videoId) {
+            // maxresdefault.jpg が存在しない場合は、hqdefault.jpg などにフォールバックされます。
+            return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+        }
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // プロフィール情報の反映
+            document.getElementById('user-name').textContent = config.name;
+            document.getElementById('user-role').textContent = config.role;
+            document.getElementById('user-bio').innerHTML = config.bio;
+
+            // リンクボタンの生成
+            const linksContainer = document.getElementById('links-container');
+            config.links.forEach(link => {
+                linksContainer.innerHTML += `<a href="${link.url}" class="glass-btn" target="_blank" rel="noopener noreferrer">${link.label}</a>`;
+            });
+            // (Contact link is provided via config.links)
+            
+            // ★複数のコンテンツブロックの生成★
+            const blocksContainer = document.getElementById('content-blocks-container');
+            config.contentBlocks.forEach((block, index) => {
+                const blockDiv = document.createElement('div');
+                blockDiv.className = 'glass-card text-content-card';
+                
+                // アニメーション遅延を順番に設定 (0.2s, 0.4s, 0.6s...)
+                blockDiv.style.animationDelay = `${0.2 + (index * 0.2)}s`; 
+                blockDiv.style.animationName = 'fadeInUp';
+                blockDiv.style.animationFillMode = 'forwards';
+
+                blockDiv.innerHTML = `
+                    <h2>${block.title}</h2>
+                    <div>${block.body}</div>
+                `;
+                blocksContainer.appendChild(blockDiv);
+            });
+
+
+            // ギャラリーの生成
+            const grid = document.getElementById('gallery-grid');
+            
+            for (let i = 1; i <= MAX_IMAGES; i++) {
+                const dataIndex = i - 1;
+                const defaultMeta = { title: `Photo ${i}`, category: 'Gallery', type: 'image' };
+                const meta = config.metaData[dataIndex] || defaultMeta;
+
+                let displayImgPath;
+                let contentSource;
+
+                if (meta.type === 'video') {
+                    const videoId = extractYouTubeId(meta.youtubeIdOrUrl);
+                    if (videoId) {
+                        // 動画の場合: YouTubeからサムネイルURLを自動取得
+                        displayImgPath = getYouTubeThumbnailUrl(videoId);
+                        contentSource = meta.youtubeIdOrUrl; // openModalに渡すのは動画ID/URL
+                    } else {
+                        // ID抽出失敗: デフォルト画像パスを使用し、typeを画像にフォールバック
+                        displayImgPath = `image/image${i}.jpg`;
+                        contentSource = displayImgPath;
+                        meta.type = 'image';
+                    }
+                } else {
+                    // 画像の場合: デフォルトの画像パスを使用
+                    displayImgPath = `image/image${i}.jpg`; 
+                    contentSource = displayImgPath;
+                }
+
+                const div = document.createElement('div');
+                div.className = 'gallery-item glass-card';
+                div.style.padding = '0';
+                div.style.marginBottom = '0';
+                
+                // アニメーション遅延を調整 (コンテンツブロックの後から始まるように)
+                const baseDelay = config.contentBlocks.length * 0.2 + 0.3;
+                div.style.animationDelay = `${baseDelay + (i * 0.1)}s`;
+                div.style.animationName = 'fadeInUp';
+                div.style.animationFillMode = 'forwards';
+
+                // ギャラリーのサムネイル
+                div.innerHTML = `
+                    <img src="${displayImgPath}" 
+                         alt="${meta.title}"
+                         onerror="this.closest('.gallery-item').style.display='none'">
+                    <div class="item-overlay">
+                        <span>${meta.title}</span>
+                    </div>
+                `;
+                
+                // openModalに関数にコンテンツソースとタイプと details を渡す
+                div.onclick = () => openModal(meta.title, meta.category, contentSource, meta.type, meta.details || null);
+                grid.appendChild(div);
+            }
+        });
+
+        // モーダル操作
+        const modal = document.getElementById('modal');
+        const modalImg = document.getElementById('modal-img');
+        const modalVideoContainer = document.getElementById('modal-video-container');
+
+        // category に改行を含めて表示するためのヘルパー
+        function setModalCategory(text) {
+            const modalCat = document.getElementById('modal-cat');
+            if (text == null) { modalCat.textContent = ''; return; }
+
+            // 既に HTML タグ（<）が含まれている場合はそのまま innerHTML を使う
+            if (text.indexOf('<') !== -1) {
+                modalCat.innerHTML = text;
+                return;
+            }
+
+            // HTML エスケープしてから改行を <br> に置換
+            const esc = (s) => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+            const formatted = esc(text).replace(/\r?\n/g, '<br>');
+            modalCat.innerHTML = formatted;
+        }
+
+    // typeは 'image' または 'video'
+    function openModal(title, category, srcOrYoutubeIdOrUrl, type = 'image', details = null) {
+            // コンテンツをリセット
+            modalImg.style.display = 'none';
+            modalVideoContainer.style.display = 'none';
+            modalVideoContainer.innerHTML = ''; // iframeをクリア
+
+            // タイトルとカテゴリを設定
+            document.getElementById('modal-title').textContent = title;
+            setModalCategory(category);
+
+            if (type === 'video') {
+                // 動画の場合
+                const videoId = extractYouTubeId(srcOrYoutubeIdOrUrl);
+                
+                if (videoId) {
+                    modalVideoContainer.style.display = 'block';
+                    
+                    // YouTube埋め込みURLを生成 (rel=0: 関連動画を非表示, enablejsapi=1: 信頼性の向上)
+                    const embedUrl = `https://www.youtube.com/embed/${videoId}?rel=0&enablejsapi=1`;
+                    
+                    // iframeを動的に作成
+                    const iframe = document.createElement('iframe');
+                    iframe.src = embedUrl;
+                    iframe.title = "YouTube video player";
+                    iframe.frameborder = "0";
+                    // allow属性を設定
+                    iframe.allow = "accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"; 
+                    iframe.allowFullscreen = true;
+                    
+                    modalVideoContainer.appendChild(iframe);
+                } else {
+                    // ID抽出に失敗した場合のフォールバック
+                    document.getElementById('modal-title').textContent = "動画の読み込みエラー";
+                    setModalCategory("YouTube ID/URLが正しくありません。");
+                }
+                
+            } else {
+                // 画像の場合 (デフォルト)
+                modalImg.src = srcOrYoutubeIdOrUrl;
+                modalImg.style.display = 'block';
+            }
+
+            modal.classList.add('active');
+            // detail button: show submodal with details (prefer details, fallback to category)
+            const detailBtn = document.getElementById('modal-detail-btn');
+            if (detailBtn) {
+                if (!details) {
+                    detailBtn.style.display = 'none';
+                    detailBtn.onclick = null;
+                } else {
+                    detailBtn.style.display = '';
+                    // make it a toggle: if submodal open, close it; otherwise open with details
+                    detailBtn.onclick = () => {
+                        const subPanel = document.getElementById('submodal-panel');
+                        if (subPanel && subPanel.classList.contains('active')) {
+                            closeSubModal();
+                        } else {
+                            openSubModal(title, details || category);
+                        }
+                    };
+                    // ensure initial label
+                    detailBtn.textContent = '詳細を見る';
+                }
+            }
+        }
+
+        function closeModal() {
+            // モーダルを閉じる際、動画の再生を停止するためにiframeの内容をクリア
+            modalVideoContainer.innerHTML = '';
+            modal.classList.remove('active');
+            // もしサブモーダルが開いていれば閉じる
+            closeSubModal();
+        }
+
+        // サブモーダル操作（メインモーダルを左にスライドさせ、右側にパネルを表示）
+        const submodal = document.getElementById('submodal');
+    function openSubModal(title, detailsText) {
+
+            const body = document.getElementById('submodal-body');
+            if (!detailsText) { body.textContent = ''; }
+            else if (detailsText.indexOf('<') !== -1) {
+                body.innerHTML = detailsText;
+            } else {
+                const d = document.createElement('div'); d.textContent = detailsText; body.innerHTML = d.innerHTML.replace(/\r?\n/g, '<br>');
+            }
+
+            // スライド: メインモーダルを左に移動
+            const modalContent = document.querySelector('#modal .modal-content');
+            const subPanel = document.getElementById('submodal-panel');
+            if (modalContent) {
+                modalContent.style.transform = 'translateX(-38%) scale(0.96)';
+            }
+            if (subPanel) {
+                subPanel.classList.add('active');
+                subPanel.setAttribute('aria-hidden', 'false');
+            }
+            // change detail button to close state
+            const detailBtnAfter = document.getElementById('modal-detail-btn');
+            if (detailBtnAfter) { detailBtnAfter.textContent = '閉じる'; }
+        }
+
+        function closeSubModal() {
+            const modalContent = document.querySelector('#modal .modal-content');
+            const subPanel = document.getElementById('submodal-panel');
+            if (modalContent) {
+                modalContent.style.transform = '';
+            }
+            if (subPanel) {
+                subPanel.classList.remove('active');
+                subPanel.setAttribute('aria-hidden', 'true');
+            }
+            // restore detail button label
+            const detailBtnAfterClose = document.getElementById('modal-detail-btn');
+            if (detailBtnAfterClose) { detailBtnAfterClose.textContent = '詳細を見る'; }
+            document.getElementById('submodal-body').innerHTML = '';
+        }
+    </script>
+</body>
+</html>
