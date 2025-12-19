@@ -313,25 +313,53 @@
             pointer-events: none; /* 背景のクリックはメインモーダルに伝える */
             z-index: 110;
             display: block;
+            overflow: visible; /* allow edge button to be visible outside */
         }
         .submodal-panel {
             position: absolute;
             top: 50%;
             right: 4%;
-            transform: translateY(-50%) translateX(30px); /* 非表示時は少し右にオフセット */
+            transform: translateY(-50%) translateX(30px); /* hidden: offset a bit right */
             width: 40%;
             max-width: 520px;
             min-width: 300px;
             max-height: 80vh;
-            overflow: auto;
+            overflow: visible; /* allow edge button to be visible outside */
             background: #2f3a42;
             border-radius: 16px;
-            padding: 1rem 1.25rem;
+            padding: 0; /* remove internal padding so edge button sits flush */
             box-shadow: 0 12px 30px rgba(0,0,0,0.6);
             color: var(--text-main);
             pointer-events: auto;
             opacity: 0;
             transition: transform 0.28s ease, opacity 0.28s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        /* 左エッジに出す閉じるボタン（主にモバイル向け） */
+        .submodal-edge-btn {
+            position: absolute;
+            left: -36px; /* slightly wider to accommodate arrows */
+            top: 0;
+            bottom: 0;
+            width: 36px; /* narrow vertical button */
+            border: none;
+            background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.06));
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            border-radius: 8px 0 0 8px;
+            box-shadow: -2px 0 6px rgba(0,0,0,0.06);
+            transform: rotate(0deg); /* keep arrows horizontal */
+            padding: 0;
+            font-size: 14px;
+        }
+        /* 小さい画面ではサブパネルを少し広げてボタン分のスペースを確保 */
+        @media (max-width: 800px) {
+            .submodal-panel { right: 3%; width: 46%; min-width: 260px; }
         }
         .submodal-panel.active {
             transform: translateY(-50%) translateX(0);
@@ -411,7 +439,9 @@
     <!-- サブモーダル: メインモーダルから開く詳細表示 -->
     <div id="submodal" class="submodal-overlay">
         <div id="submodal-panel" class="submodal-panel" aria-hidden="true">
-            <div id="submodal-body" style="white-space: pre-wrap; margin-top:0; line-height:1.6;"></div>
+                <!-- Narrow vertical left-edge button (thin strip) -->
+                <button class="submodal-edge-btn glass-btn" aria-label="閉じる">&lt;&lt;</button>
+                <div id="submodal-body" style="white-space: pre-wrap; margin-top:0; line-height:1.6; padding-left:0.9rem; max-height:72vh; overflow:auto;"></div>
             <!-- submodal close moved to main modal detail button -->
         </div>
     </div>
@@ -668,6 +698,12 @@
                 div.onclick = () => openModal(meta.title, meta.category, contentSource, meta.type, meta.details || null);
                 grid.appendChild(div);
             }
+
+            // 左端のサブモーダル閉じるボタンのクリックを結びつける
+            const edgeBtn = document.querySelector('.submodal-edge-btn');
+            if (edgeBtn) {
+                edgeBtn.addEventListener('click', (e) => { e.stopPropagation(); closeSubModal(); });
+            }
         });
 
         // モーダル操作
@@ -791,7 +827,7 @@
             }
             // change detail button to close state
             const detailBtnAfter = document.getElementById('modal-detail-btn');
-            if (detailBtnAfter) { detailBtnAfter.textContent = '閉じる'; }
+            if (detailBtnAfter) { detailBtnAfter.textContent = '閉じる'; detailBtnAfter.style.display = 'none'; }
         }
 
         function closeSubModal() {
@@ -806,7 +842,7 @@
             }
             // restore detail button label
             const detailBtnAfterClose = document.getElementById('modal-detail-btn');
-            if (detailBtnAfterClose) { detailBtnAfterClose.textContent = '詳細を見る'; }
+            if (detailBtnAfterClose) { detailBtnAfterClose.textContent = '詳細を見る'; detailBtnAfterClose.style.display = ''; }
             document.getElementById('submodal-body').innerHTML = '';
         }
     </script>
