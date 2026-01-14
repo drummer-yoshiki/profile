@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<!--
+  Lesson page: duplicate of index.html with name/role overrides
+-->
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+
+    <title>Lesson - 松枝 良樹</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&family=M+PLUS+Rounded+1c:wght@300;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ...existing styles... */
+    </style>
+</head>
+<body>
+    <script>
+        // Use sessionStorage to pass overrides to index.html then redirect.
+        const overrides = {
+            __override__: true,
+            name: "松枝 良樹",
+            role: "豊田ドラム研究会",
+            extraContentBlocks: [
+                {
+                    title: "豊田ドラム研究会について",
+                    body: "2016年4月に代表の松枝が設立。<br>代表が所有するドラムセットを用いて、メンバーへのレッスンを行ったり、合同で練習を行う。"
+                },
+                {
+                    title: "会費（レッスン込み）",
+                    body: "1時間 ¥3,000<br>※青少年センターに所属する団体のため、営利目的の徴収ではなく、ドラム皮等の消耗品・楽譜制作・楽器運搬等にかかる費用を負担いただく形式をとっています。"
+                }
+            ]
+        };
+        try {
+            sessionStorage.setItem('lessonOverrides', JSON.stringify(overrides));
+            // Redirect to index with a flag so index only applies overrides when intended
+            window.location.replace('index.html?lesson=1');
+        } catch (e) {
+            console.error('Failed to set lesson overrides', e);
+            window.location.replace('index.html');
+        }
+    </script>
+</body>
+</html>

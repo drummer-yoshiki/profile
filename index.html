@@ -452,7 +452,7 @@
          * 設定エリア (Updated)
          * ==============================================
          */
-        const config = {
+        let config = {
             // あなたのお名前
             name: "Jr.",
             
@@ -692,11 +692,44 @@
         }
 
 
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             // プロフィール情報の反映
             document.getElementById('user-name').textContent = config.name;
             document.getElementById('user-role').textContent = config.role;
             document.getElementById('user-bio').innerHTML = config.bio;
+
+            // Apply lesson overrides only when explicitly requested via ?lesson=1
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const isLesson = params.get('lesson') === '1';
+                const raw = sessionStorage.getItem('lessonOverrides');
+                if (isLesson && raw) {
+                    const ov = JSON.parse(raw);
+                    if (ov && ov.__override__) {
+                        console.debug('レッスン用の上書き設定を適用します');
+                        if (ov.name) document.getElementById('user-name').textContent = ov.name;
+                        if (ov.role) document.getElementById('user-role').textContent = ov.role;
+                        // append extra content blocks if provided
+                        if (Array.isArray(ov.extraContentBlocks) && ov.extraContentBlocks.length > 0) {
+                            ov.extraContentBlocks.forEach((block, idx) => {
+                                const blockDiv = document.createElement('div');
+                                blockDiv.className = 'glass-card text-content-card';
+                                blockDiv.style.animationDelay = `${0.2 + ((config.contentBlocks.length + idx) * 0.2)}s`;
+                                blockDiv.style.animationName = 'fadeInUp';
+                                blockDiv.style.animationFillMode = 'forwards';
+                                blockDiv.innerHTML = `\n                    <h2>${block.title}</h2>\n                    <div>${block.body}</div>\n                `;
+                                document.getElementById('content-blocks-container').appendChild(blockDiv);
+                            });
+                        }
+                    }
+                    sessionStorage.removeItem('lessonOverrides');
+                } else {
+                    // ensure no stale overrides remain
+                    if (raw) sessionStorage.removeItem('lessonOverrides');
+                }
+            } catch (e) {
+                console.warn('lessonOverrides の適用に失敗しました', e);
+            }
 
             // リンクボタンの生成
             const linksContainer = document.getElementById('links-container');
@@ -738,18 +771,18 @@
                 if (meta.type === 'video') {
                     const videoId = extractYouTubeId(meta.youtubeIdOrUrl);
                     if (videoId) {
-                        // 動画の場合: YouTubeからサムネイルURLを自動取得
+                    // 動画の場合: YouTubeからサムネイルURLを自動取得
                         displayImgPath = getYouTubeThumbnailUrl(videoId);
                         contentSource = meta.youtubeIdOrUrl; // openModalに渡すのは動画ID/URL
                     } else {
-                        // ID抽出失敗: デフォルト画像パスを使用し、typeを画像にフォールバック
+                    // ID抽出失敗: デフォルト画像パスを使用し、typeを画像にフォールバック
                         displayImgPath = `image/image${i}.jpg`;
                         contentSource = displayImgPath;
                         meta.type = 'image';
                     }
                 } else {
-                    // 画像の場合: デフォルトの画像パスを使用
-                    displayImgPath = `image/image${i}.jpg`; 
+                // 画像の場合: デフォルトの画像パスを使用
+                    displayImgPath = `image/image${i}.jpg`;
                     contentSource = displayImgPath;
                 }
 
@@ -757,7 +790,7 @@
                 div.className = 'gallery-item glass-card';
                 div.style.padding = '0';
                 div.style.marginBottom = '0';
-                
+
                 // アニメーション遅延を調整 (コンテンツブロックの後から始まるように)
                 const baseDelay = config.contentBlocks.length * 0.2 + 0.3;
                 div.style.animationDelay = `${baseDelay + (i * 0.1)}s`;
@@ -767,13 +800,13 @@
                 // ギャラリーのサムネイル
                 div.innerHTML = `
                     <img src="${displayImgPath}" 
-                         alt="${meta.title}"
-                         onerror="this.closest('.gallery-item').style.display='none'">
+                            alt="${meta.title}"
+                            onerror="this.closest('.gallery-item').style.display='none'">
                     <div class="item-overlay">
                         <span>${meta.title}</span>
                     </div>
                 `;
-                
+
                 // openModalに関数にコンテンツソースとタイプと details を渡す
                 div.onclick = () => openModal(meta.title, meta.category, contentSource, meta.type, meta.details || null);
                 grid.appendChild(div);
@@ -887,7 +920,7 @@
         const submodal = document.getElementById('submodal');
     function openSubModal(title, detailsText) {
 
-            const body = document.getElementById('submodal-body');
+                const body = document.getElementById('submodal-body');
             if (!detailsText) { body.textContent = ''; }
             else if (detailsText.indexOf('<') !== -1) {
                 body.innerHTML = detailsText;
