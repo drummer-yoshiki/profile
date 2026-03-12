@@ -1,0 +1,36 @@
+{
+  "name": "Jr.",
+  "role": "Drummer",
+  "bio": "ドラムやゲームが大好きなただの会社員です",
+  "contentBlocks": [
+    {
+      "title": "Biography",
+      "body": "1988年生まれ。<br>中学校の吹奏楽部でパーカッションパートに所属し、初めてドラムセットと出会う。<br>ドラムにのめりこみ、中学卒業後は軽音部や学校外でのバンド活動を行う。<br><br>その後、モーラー奏法に興味を持ち、2007年から山背弘先生に師事。<br>身体操作やグルーブ理論など、幅広く学習し、先生から「研究員資格」を授与された。<br>現在も半年に一度、新しい理論の習得や既存メソッドの確認・更新、意見交換などを行い、自身の能力向上に努めている。"
+    },
+    {
+      "title": "Favorite Drummers",
+      "body": "<ul class=\"drummers-list\"><li>Dave Weckl</li><li>Jojo Mayer</li><li>Benny Greb</li><li>Buddy Rich</li><li>Vinnie Colaiuta</li><li>横山和明</li></ul>"
+    },
+    {
+      "title": "豊田ドラム研究会について",
+      "body": "2016年4月に代表の松枝が設立。<br>代表が所有するドラムセットを用いて、メンバーへのレッスンを行ったり、合同で練習を行う。"
+    },
+    {
+      "title": "会費（レッスン込み）",
+      "body": "1時間 ¥3,000<br>※青少年センターに所属する団体のため、営利目的の徴収ではなく、ドラム皮等の消耗品・楽譜制作・楽器運搬等にかかる費用を負担いただく形式をとっています。"
+    }
+  ],
+  "links": [
+    { "label": "Instagram", "url": "https://www.instagram.com/drummeryoshiki/" },
+    { "label": "X (Twitter)", "url": "https://x.com/drummer_yoshiki" },
+    { "label": "YouTube", "url": "https://www.youtube.com/@jr.drummer" },
+    { "label": "Contact (Gmail)", "url": "mailto:vi.brate.yoshiki@gmail.com" }
+  ],
+  "metaData": [
+    {
+      "title": "Main Drums",
+      "category": "レッスンに使用するドラムセット",
+      "details": "<b>Snare Drum:</b><br>  YAMAHA 30th Anniversary Ltd. Edition Dave Weckl / Brass 14\"x5.5\"<br>..."
+    }
+  ]
+}
