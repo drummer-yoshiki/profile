@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>YouTube 簡単埋め込み</title>
+<style>
+body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+input { width: 100%; max-width: 600px; padding: 12px; font-size: 16px; box-sizing: border-box; }
+button { padding: 12px 24px; font-size: 16px; margin-top: 10px; }
+iframe { margin-top: 20px; width: 100%; max-width: 1200px; height: 70vh; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+</style>
+</head>
+<body>
+<h1>YouTube URLを貼って埋め込み再生</h1>
+<input type="text" id="url" placeholder="https://youtu.be/xxxx または youtube.com/watch?v=xxxx">
+<button onclick="generateEmbed()">埋め込み生成</button>
+
+<div id="player"></div>
+
+<script>
+// より頑丈なYouTube動画ID抽出関数
+function getYouTubeId(url) {
+    if (!url) return null;
+    
+    // よくあるパターンを網羅した正規表現
+    const regExp = /(?:https?:\/\/)?(?:www\.|m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([^"&?\/\s]{11})/;
+    const match = url.match(regExp);
+    return match ? match[1] : null;
+}
+
+function generateEmbed() {
+    let url = document.getElementById('url').value.trim();
+    const videoId = getYouTubeId(url);
+
+    if (videoId) {
+        const embed = `
+<iframe 
+    src="https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&playsinline=1" 
+    allowfullscreen 
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+</iframe>`;
+        document.getElementById('player').innerHTML = embed;
+    } else {
+        alert('正しいYouTube URLを貼ってください\n\n例:\nhttps://youtu.be/xxxxxxxxxxx\nhttps://youtube.com/watch?v=xxxxxxxxxxx');
+    }
+}
+
+// Enterキー対応
+document.getElementById('url').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') generateEmbed();
+});
+</script>
+</body>
+</html>
